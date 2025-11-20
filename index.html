@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Nigga</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Styles */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .soft-glow {
+            box-shadow: 0 0 20px rgba(255, 192, 203, 0.6);
+        }
+
+        .floating-heart {
+            position: absolute;
+            animation: floatUp 4s ease-in-out forwards;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5); 
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 relative">
+
+    <!-- Background Particles -->
+    <div id="particles" class="absolute inset-0 pointer-events-none z-0"></div>
+
+    <div class="glass w-full max-w-md rounded-3xl p-6 z-10 relative transition-all duration-300">
+        
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/30 mb-3 soft-glow text-pink-600 animate-bounce">
+                <i data-lucide="heart" class="fill-current"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-white drop-shadow-md">Sup!! Nigga</h1>
+            <p class="text-white/90 text-sm mt-1">Im gonna be there mf dw!</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex bg-white/20 rounded-full p-1 mb-8">
+            <button onclick="switchTab('focus')" id="btn-focus" class="flex-1 py-2 rounded-full text-sm font-bold text-pink-700 bg-white shadow-sm transition-all duration-300">
+                Focus Mode
+            </button>
+            <button onclick="switchTab('reunion')" id="btn-reunion" class="flex-1 py-2 rounded-full text-sm font-bold text-white hover:bg-white/10 transition-all duration-300">
+                Reunion
+            </button>
+        </div>
+
+        <!-- FOCUS MODE -->
+        <div id="tab-focus" class="block text-center">
+            <div class="mb-8 relative">
+                <!-- Timer Circle -->
+                <div class="w-64 h-64 mx-auto rounded-full border-8 border-white/30 flex items-center justify-center relative bg-white/10">
+                    <div class="text-center">
+                        <div id="timer-display" class="text-6xl font-bold text-white drop-shadow-sm font-mono">25:00</div>
+                        <p id="timer-status" class="text-white/80 text-sm mt-2 uppercase tracking-widest">Time to lock in</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex justify-center gap-4 mb-6">
+                <button onclick="toggleTimer()" id="start-btn" class="w-14 h-14 rounded-full bg-white text-pink-500 flex items-center justify-center hover:scale-110 transition-transform shadow-lg">
+                    <i data-lucide="play" class="fill-current ml-1"></i>
+                </button>
+                <button onclick="resetTimer()" class="w-14 h-14 rounded-full bg-white/30 text-white flex items-center justify-center hover:bg-white/40 transition-colors shadow-lg">
+                    <i data-lucide="rotate-ccw"></i>
+                </button>
+            </div>
+
+            <!-- Preset Buttons -->
+            <div class="flex justify-center gap-2">
+                <button onclick="setTimer(25)" class="px-4 py-1 rounded-full bg-white/20 text-white text-xs hover:bg-white/40 transition">25m</button>
+                <button onclick="setTimer(10)" class="px-4 py-1 rounded-full bg-white/20 text-white text-xs hover:bg-white/40 transition">10m</button>
+                <button onclick="setTimer(5)" class="px-4 py-1 rounded-full bg-white/20 text-white text-xs hover:bg-white/40 transition">5m</button>
+            </div>
+        </div>
+
+        <!-- REUNION MODE -->
+        <div id="tab-reunion" class="hidden text-center">
+            <div class="bg-white/20 rounded-2xl p-6 mb-6 border border-white/30">
+                <h2 class="text-white text-lg font-semibold mb-2">Until We Meet Again</h2>
+                <div id="countdown-display" class="grid grid-cols-4 gap-2 text-white">
+                    <div class="flex flex-col bg-white/20 rounded-lg p-2">
+                        <span id="cd-days" class="text-2xl font-bold">0</span>
+                        <span class="text-[10px] uppercase">Days</span>
+                    </div>
+                    <div class="flex flex-col bg-white/20 rounded-lg p-2">
+                        <span id="cd-hours" class="text-2xl font-bold">0</span>
+                        <span class="text-[10px] uppercase">Hrs</span>
+                    </div>
+                    <div class="flex flex-col bg-white/20 rounded-lg p-2">
+                        <span id="cd-mins" class="text-2xl font-bold">0</span>
+                        <span class="text-[10px] uppercase">Mins</span>
+                    </div>
+                    <div class="flex flex-col bg-white/20 rounded-lg p-2">
+                        <span id="cd-secs" class="text-2xl font-bold">0</span>
+                        <span class="text-[10px] uppercase">Secs</span>
+                    </div>
+                </div>
+                
+                <div id="date-picker-container" class="mt-4 hidden">
+                    <label class="block text-white/80 text-xs mb-1">When is the reunion?</label>
+                    <input type="datetime-local" id="reunion-date-input" class="w-full rounded-lg p-2 text-pink-600 text-sm outline-none bg-white/90">
+                    <button onclick="saveReunionDate()" class="mt-2 w-full py-2 bg-pink-500 text-white rounded-lg text-sm font-bold hover:bg-pink-600 transition">Save Date</button>
+                </div>
+
+                <button onclick="toggleDatePicker()" class="mt-4 text-xs text-white/70 underline hover:text-white">
+                    Edit Reunion Date
+                </button>
+            </div>
+            
+            <div class="bg-white/30 p-4 rounded-xl">
+                <p class="text-white italic text-sm">"Distance allows us to grow separately so we can be even stronger when we're together."</p>
+            </div>
+        </div>
+
+        <!-- COMFORT MESSAGE SECTION -->
+        <div class="mt-8 pt-6 border-t border-white/20">
+            <button onclick="showComfortMessage()" class="group w-full py-3 rounded-xl bg-gradient-to-r from-pink-400 to-purple-400 text-white font-bold shadow-lg transform transition hover:-translate-y-1 active:translate-y-0 flex items-center justify-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 group-hover:animate-spin"></i>
+                I Need Comfort
+                <i data-lucide="sparkles" class="w-4 h-4 group-hover:animate-spin"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Comfort Modal -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/40 z-40 hidden backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-content" class="bg-white rounded-3xl p-6 max-w-sm w-full text-center transform scale-90 opacity-0 transition-all duration-300 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-pink-400 to-purple-500"></div>
+            <button onclick="closeModal()" class="absolute top-3 right-4 text-gray-400 hover:text-gray-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4 text-pink-500">
+                <i data-lucide="mail-heart" class="w-8 h-8"></i>
+            </div>
+            
+            <h3 class="text-xl font-bold text-gray-800 mb-2">A Note for You</h3>
+            <p id="modal-text" class="text-gray-600 leading-relaxed italic mb-6">Loading...</p>
+            
+            <button onclick="closeModal()" class="w-full py-2.5 rounded-xl bg-pink-500 text-white font-semibold hover:bg-pink-600 transition">
+                Fuck Off Nigga
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // --- COMFORT MESSAGES ---
+        const messages = [
+            "Nigga dont worry ill be there for you man 💖",
+            "mkc bhaiiii im coming in few days 🌏",
+            "comee on less break this shit nigga  ✨",
+            "Sending you a virtual hug right now 🫂",
+            "Hows life nigga without me ",
+            "I'm just a text away nigga",
+            "Remember all those crazy memories. we gonna more gandmasti",
+            "It's okay to be emotional. It just means you have a big heart",
+            "Focus on you right now. I'm cheering you on from afar!",
+            "You are my favorite nigga gang",
+            "Drink some water"
+        ];
+
+        function showComfortMessage() {
+            const modalOverlay = document.getElementById('modal-overlay');
+            const modalContent = document.getElementById('modal-content');
+            const modalText = document.getElementById('modal-text');
+            
+            // Pick random message
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+            modalText.innerText = `"${randomMsg}"`;
+
+            // Show Modal
+            modalOverlay.classList.remove('hidden');
+            // Slight delay for animation
+            setTimeout(() => {
+                modalContent.classList.remove('scale-90', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            createFloatingHearts();
+        }
+
+        function closeModal() {
+            const modalOverlay = document.getElementById('modal-overlay');
+            const modalContent = document.getElementById('modal-content');
+
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-90', 'opacity-0');
+
+            setTimeout(() => {
+                modalOverlay.classList.add('hidden');
+            }, 300);
+        }
+        
+        // Show a message on first load immediately
+        window.onload = () => {
+            setTimeout(() => {
+                showComfortMessage();
+            }, 1000);
+            loadReunionDate();
+            setInterval(updateCountdown, 1000);
+        };
+
+        function createFloatingHearts() {
+            const container = document.body;
+            for(let i=0; i<10; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.classList.add('floating-heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 4000);
+            }
+        }
+
+        // --- TABS LOGIC ---
+        function switchTab(tab) {
+            const focusTab = document.getElementById('tab-focus');
+            const reunionTab = document.getElementById('tab-reunion');
+            const btnFocus = document.getElementById('btn-focus');
+            const btnReunion = document.getElementById('btn-reunion');
+
+            if (tab === 'focus') {
+                focusTab.classList.remove('hidden');
+                reunionTab.classList.add('hidden');
+                
+                btnFocus.classList.add('bg-white', 'text-pink-700', 'shadow-sm');
+                btnFocus.classList.remove('text-white', 'hover:bg-white/10');
+                
+                btnReunion.classList.remove('bg-white', 'text-pink-700', 'shadow-sm');
+                btnReunion.classList.add('text-white', 'hover:bg-white/10');
+            } else {
+                focusTab.classList.add('hidden');
+                reunionTab.classList.remove('hidden');
+
+                btnReunion.classList.add('bg-white', 'text-pink-700', 'shadow-sm');
+                btnReunion.classList.remove('text-white', 'hover:bg-white/10');
+                
+                btnFocus.classList.remove('bg-white', 'text-pink-700', 'shadow-sm');
+                btnFocus.classList.add('text-white', 'hover:bg-white/10');
+            }
+        }
+
+        // --- TIMER LOGIC (Focus Mode) ---
+        let timerInterval;
+        let totalSeconds = 25 * 60;
+        let isRunning = false;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            document.getElementById('timer-display').innerText = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('start-btn');
+            const icon = btn.querySelector('svg'); // Get Lucide SVG
+            
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                // Change icon to Play
+                btn.innerHTML = `<i data-lucide="play" class="fill-current ml-1"></i>`;
+                document.getElementById('timer-status').innerText = "Paused";
+            } else {
+                timerInterval = setInterval(() => {
+                    if (totalSeconds > 0) {
+                        totalSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        document.getElementById('timer-status').innerText = "Good Job!";
+                        // Play a sound or visual cue
+                        createFloatingHearts();
+                    }
+                }, 1000);
+                isRunning = true;
+                // Change icon to Pause
+                btn.innerHTML = `<i data-lucide="pause" class="fill-current"></i>`;
+                document.getElementById('timer-status').innerText = "You got this!";
+            }
+            lucide.createIcons(); // Re-render icons
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            totalSeconds = 25 * 60;
+            updateTimerDisplay();
+            document.getElementById('timer-status').innerText = "Ready?";
+            document.getElementById('start-btn').innerHTML = `<i data-lucide="play" class="fill-current ml-1"></i>`;
+            lucide.createIcons();
+        }
+
+        function setTimer(minutes) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            totalSeconds = minutes * 60;
+            updateTimerDisplay();
+            document.getElementById('timer-status').innerText = "Let's start";
+            document.getElementById('start-btn').innerHTML = `<i data-lucide="play" class="fill-current ml-1"></i>`;
+            lucide.createIcons();
+        }
+
+        // --- REUNION LOGIC ---
+        let reunionDate = localStorage.getItem('bestieReunionDate');
+
+        function loadReunionDate() {
+            if (reunionDate) {
+                updateCountdown();
+            } else {
+                // HARDCODED DEFAULT: Dec 14th
+                const now = new Date();
+                const currentYear = now.getFullYear();
+                
+                // Month is 0-indexed (0=Jan, 11=Dec)
+                // So 11 is December
+                let targetDate = new Date(currentYear, 11, 14, 0, 0, 0); 
+
+                // If Dec 14 has passed this year, move to next year
+                if (now > targetDate) {
+                    targetDate.setFullYear(currentYear + 1);
+                }
+
+                reunionDate = targetDate.toISOString();
+                
+                // Save this default so it persists
+                localStorage.setItem('bestieReunionDate', reunionDate);
+                updateCountdown();
+            }
+        }
+
+        function toggleDatePicker() {
+            const container = document.getElementById('date-picker-container');
+            container.classList.toggle('hidden');
+        }
+
+        function saveReunionDate() {
+            const input = document.getElementById('reunion-date-input').value;
+            if (input) {
+                reunionDate = new Date(input).toISOString();
+                localStorage.setItem('bestieReunionDate', reunionDate);
+                toggleDatePicker();
+                updateCountdown();
+                // Flash success visual
+                alert("Date saved! Countdown updated. 💖"); 
+            }
+        }
+
+        function updateCountdown() {
+            if (!reunionDate) return;
+            
+            const now = new Date().getTime();
+            const target = new Date(reunionDate).getTime();
+            const diff = target - now;
+
+            if (diff < 0) {
+                document.getElementById('countdown-display').innerHTML = '<div class="col-span-4 text-2xl font-bold text-white">Reunited! 🎉</div>';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('cd-days').innerText = days;
+            document.getElementById('cd-hours').innerText = hours;
+            document.getElementById('cd-mins').innerText = minutes;
+            document.getElementById('cd-secs').innerText = seconds;
+        }
+    </script>
+</body>
+</html>
